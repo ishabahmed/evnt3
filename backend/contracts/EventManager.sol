@@ -12,18 +12,19 @@ contract EventManager {
         mapping (address => bool) bookings;
     }
 
-    event EventCreated(address organiser, string eventName, uint startTime, uint endTime, uint bookingCost);
+    event EventCreated(uint eventId);
     event EventBooked(uint eventId, address booker);
+    event EventDetails(address, string, uint, uint, uint);
 
     mapping (uint => Event) public events;
 
     // organiser creates new event
-    function createEvent(string memory _name, uint _startTime, uint _endTime, uint _bookingCost) public returns (uint) {
-        require(_startTime > block.timestamp && _endTime > _startTime, "Event time must be in the future.");
-        require(_bookingCost >= 0, "Negative booking cost now allowed.");
+    function createEvent(string memory _name, uint _startTime, uint _endTime, uint _bookingCost) public {
+        // require(_startTime > block.timestamp && _endTime > _startTime, "Event time must be in the future.");
+        // require(_bookingCost >= 0, "Negative booking cost now allowed.");
         
         uint eventId = uint(keccak256(abi.encodePacked(msg.sender, _name, _startTime, _endTime)));
-        require(events[eventId].exists == false, "Event of this name and time already created by this user!");
+        // require(events[eventId].exists == false, "Event of this name and time already created by this user!");
         
         // event created this way to allow for nested mappings
         // ( events[eventId] = Event(msg.sender, _name, _startTime, _endTime, _bookingCost, true) )
@@ -35,9 +36,7 @@ contract EventManager {
         e.bookingCost = _bookingCost;
         e.exists = true;
         
-        emit EventCreated(msg.sender, _name, _startTime, _endTime, _bookingCost);
-
-        return eventId;
+        emit EventCreated(eventId);
     }
 
     // user books the event by depositing the required amount and supplying event id
@@ -58,8 +57,8 @@ contract EventManager {
     }
 
     // return details from specific event struct
-    function getEventDetails(uint _eventId) public view returns (address, string memory, uint, uint, uint) {
+    function getEventDetails(uint _eventId) public {
         require(events[_eventId].exists == true, "Event with that ID does not exist");
-        return (events[_eventId].organiser, events[_eventId].name, events[_eventId].startTime, events[_eventId].endTime, events[_eventId].bookingCost);
+        emit EventDetails(events[_eventId].organiser, events[_eventId].name, events[_eventId].startTime, events[_eventId].endTime, events[_eventId].bookingCost);
     }
 }
