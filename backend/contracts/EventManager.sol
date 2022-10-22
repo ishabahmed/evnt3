@@ -62,11 +62,4 @@ contract EventManager {
         emit EventDetails(events[_eventId].organiser, events[_eventId].name, events[_eventId].startTime, events[_eventId].endTime, events[_eventId].bookingCost);
     }
 
-    // allow user to get their deposit on event back
-    function withdraw(uint _eventId) public {
-        require(events[_eventId].exists == true, "Event with that ID does not exist");
-        require(events[_eventId].bookings[msg.sender] == true, "You did not book this event");
-
-        payable(msg.sender).transfer(events[_eventId].bookingCost);
-    }
 }

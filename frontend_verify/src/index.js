@@ -14,7 +14,7 @@ const styles = {
 };
 
 // update with your contract address
-const deployedContractAddress = "0x31E9dD4c5DD72ad0eb8260C2b32BEa67Fad63F3b";
+const deployedContractAddress = "0x282dEe5348037Aa80e226Ad3dC9936A02f1b7a97";
 
 // more info on query based requests: https://0xpolygonid.github.io/tutorials/wallet/proof-generation/types-of-auth-requests-and-proofs/#query-based-request
 const qrProofRequestJson = {
