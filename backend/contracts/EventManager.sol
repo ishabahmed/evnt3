@@ -51,4 +51,15 @@ contract EventManager {
         emit EventBooked(_eventId, msg.sender);
     }
 
+    // check if user has booked a specific event or not
+    function checkBooking(uint _eventId) public view returns (bool) {
+        require(events[_eventId].exists == true, "Event with that ID does not exist");
+        return events[_eventId].bookings[msg.sender];
+    }
+
+    // return details from specific event struct
+    function getEventDetails(uint _eventId) public view returns (address, string memory, uint, uint, uint) {
+        require(events[_eventId].exists == true, "Event with that ID does not exist");
+        return (events[_eventId].organiser, events[_eventId].name, events[_eventId].startTime, events[_eventId].endTime, events[_eventId].bookingCost);
+    }
 }
