@@ -20,11 +20,11 @@ contract EventManager {
 
     // organiser creates new event
     function createEvent(string memory _name, uint _startTime, uint _endTime, uint _bookingCost) public {
-        // require(_startTime > block.timestamp && _endTime > _startTime, "Event time must be in the future.");
-        // require(_bookingCost >= 0, "Negative booking cost now allowed.");
+        require(_startTime > block.timestamp && _endTime > _startTime, "Event time must be in the future.");
+        require(_bookingCost >= 0, "Negative booking cost now allowed.");
         
         uint eventId = uint(keccak256(abi.encodePacked(msg.sender, _name, _startTime, _endTime)));
-        // require(events[eventId].exists == false, "Event of this name and time already created by this user!");
+        require(events[eventId].exists == false, "Event of this name and time already created by this user!");
         
         // event created this way to allow for nested mappings
         // ( events[eventId] = Event(msg.sender, _name, _startTime, _endTime, _bookingCost, true) )
@@ -60,5 +60,13 @@ contract EventManager {
     function getEventDetails(uint _eventId) public {
         require(events[_eventId].exists == true, "Event with that ID does not exist");
         emit EventDetails(events[_eventId].organiser, events[_eventId].name, events[_eventId].startTime, events[_eventId].endTime, events[_eventId].bookingCost);
+    }
+
+    // allow user to get their deposit on event back
+    function withdraw(uint _eventId) public {
+        require(events[_eventId].exists == true, "Event with that ID does not exist");
+        require(events[_eventId].bookings[msg.sender] == true, "You did not book this event");
+
+        payable(msg.sender).transfer(events[_eventId].bookingCost);
     }
 }
