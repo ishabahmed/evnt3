@@ -38,4 +38,14 @@ contract EventManager {
         return eventId;
     }
 
+    // user books the event by depositing the required amount and supplying event id
+    function bookEvent(uint _eventId) public payable {
+        require(events[_eventId].exists == true, "Event with that ID does not exist.");
+        require(events[_eventId].bookings[msg.sender] == false, "You have already booked this event!");
+        require(events[_eventId].bookingCost == msg.value, "Wrong booking cost sent for event.");
+        
+        events[_eventId].bookings[msg.sender] = true;
+        emit EventBooked(_eventId, msg.sender);
+    }
+
 }
